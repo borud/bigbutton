@@ -20,8 +20,7 @@
 static const char *TAG = "NET";
 static EventGroupHandle_t wifi_event_group;
 
-static void event_handler(void *arg, esp_event_base_t event_base, int32_t event_id,
-                          void *event_data) {
+static void event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data) {
     ip_event_got_ip_t *got_ip_event;
 
     switch (event_id) {
@@ -65,10 +64,10 @@ void wifi_init(void) {
 
     esp_event_handler_instance_t instance_any_id;
     esp_event_handler_instance_t instance_got_ip;
-    ESP_ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID,
-                                                        &event_handler, NULL, &instance_any_id));
-    ESP_ERROR_CHECK(esp_event_handler_instance_register(IP_EVENT, IP_EVENT_STA_GOT_IP,
-                                                        &event_handler, NULL, &instance_got_ip));
+    ESP_ERROR_CHECK(esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL,
+                                                        &instance_any_id));
+    ESP_ERROR_CHECK(esp_event_handler_instance_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler, NULL,
+                                                        &instance_got_ip));
 
     wifi_config_t wifi_config = {
         .sta =

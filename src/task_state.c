@@ -3,9 +3,11 @@
 #include "config.h"
 #include "esp_crt_bundle.h"
 #include "esp_http_client.h"
+#include "esp_log.h"
 
 // poll server every minute
 #define SERVER_POLL_INTERVAL_MS (10 * 1000)
+#define TAG "state"
 
 static SemaphoreHandle_t minuteSem = NULL;
 static int minutesSinceLastPill = 0;
@@ -18,7 +20,7 @@ void init_state_task() {
 // parses the JSON response and updates the minutesSinceLastPill global.
 esp_err_t client_event_get_handler(esp_http_client_event_handle_t evt) {
     char buffer[100];
-    int value;
+    int value = 0;
 
     switch (evt->event_id) {
     case HTTP_EVENT_ON_DATA:
@@ -32,11 +34,13 @@ esp_err_t client_event_get_handler(esp_http_client_event_handle_t evt) {
         xSemaphoreTake(minuteSem, portMAX_DELAY);
         minutesSinceLastPill = value;
         xSemaphoreGive(minuteSem);
+        ESP_LOGI(TAG, "minutes: %d", value);
         break;
 
     default:
         break;
     }
+
     return ESP_OK;
 }
 
